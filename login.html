@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>BiBank - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="header-left"></div>
+  <div class="logo">BiBank</div>
+  <nav>
+    <ul>
+      <li><a href="sobre.html">Sobre nós</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="container" style="justify-content: center;">
+  <div class="card">
+    <h2>Acesse sua conta</h2>
+    <input type="text" id="cpf" placeholder="CPF" maxlength="11">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="login-btn">Entrar</button>
+    <p class="link-login">Não tem conta? <a href="index.html">Cadastre-se</a></p>
+  </div>
+</main>
+
+<div id="notification"></div>
+<footer> Desenvolvido por Diedson Kenned </footer>
+
+<script>
+  const cpfInput = document.getElementById('cpf');
+  const senhaInput = document.getElementById('senha');
+  const btn = document.getElementById('login-btn');
+  const notification = document.getElementById('notification');
+
+  const showNotification = (message, type = 'error') => {
+    notification.textContent = message;
+    notification.className = type;
+    notification.classList.add('show');
+    setTimeout(() => { notification.classList.remove('show'); }, 3000);
+  };
+
+  btn.addEventListener('click', () => {
+    const cpf = cpfInput.value.trim();
+    const senha = senhaInput.value;
+
+    if (!cpf || !senha) {
+      showNotification('Preencha seu CPF e senha.');
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('biBankUsers')) || [];
+    const user = users.find(u => u.cpf === cpf);
+
+    if (user && user.senha === senha) {
+      // Login bem-sucedido! Salva o CPF do usuário logado e redireciona
+      sessionStorage.setItem('loggedInUserCPF', cpf);
+      window.location.href = 'dashboard.html';
+    } else {
+      showNotification('CPF ou senha inválidos.');
+    }
+  });
+</script>
+</body>
+</html>
