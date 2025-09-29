@@ -3,386 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>BiBank - Sua Conta</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* NOVA FONTE IMPORTADA DO GOOGLE FONTS */
-        @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-
-        :root {
-            --cor-primaria: #0038A8;
-            --cor-primaria-clara: #4A8DFF;
-            --gradiente-perolado: linear-gradient(145deg, var(--cor-primaria-clara), var(--cor-primaria));
-            --fundo: #f0f2f5;
-            --card-bg: #ffffff;
-            --texto: #333;
-            --texto-claro: #ffffff;
-            --borda: #ccc;
-            --sucesso: #28a745;
-            --erro: #dc3545;
+        /* CORREÇÃO PARA OS BOTÕES DO MENU PRINCIPAL */
+        .menu-grid button {
+            background: linear-gradient(145deg, #4A8DFF, #0038A8) !important; /* Fundo azul perolado */
+            color: #ffffff !important; /* Texto branco */
+            border: none !important;
+        }
+        .menu-grid button:hover {
+            filter: brightness(1.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--fundo);
-            color: var(--texto);
+        /* CORREÇÃO PARA O ALINHAMENTO DO PAINEL */
+        .menu-layout {
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        main { flex-grow: 1; }
-
-        /* HEADER ATUALIZADO PARA CENTRALIZAÇÃO */
-        header {
-            background: var(--gradiente-perolado);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--texto-claro);
-        }
-
-        .header-left, nav {
-            flex: 1; /* Ocupam espaço igual nas laterais */
-        }
-        nav { text-align: right; } /* Alinha o link de sair à direita */
-
-        .logo {
-            flex: 1; /* Ocupa o espaço central */
-            text-align: center; /* Centraliza o texto */
-            font-family: 'Russo One', sans-serif; /* FONTE NOVA */
-            font-size: 32px; /* Tamanho ajustado */
-            color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .logo::before {
-            content: '💳';
-            position: absolute;
-            left: 50%; /* Posiciona em relação ao centro */
-            transform: translate(-130px, -50%); /* Puxa para a esquerda do texto */
-            top: 50%;
-            font-size: 28px;
-        }
-
-        nav ul { display: inline-flex; list-style: none; gap: 25px; }
-        nav ul li a { color: var(--texto-claro); text-decoration: none; font-weight: bold; cursor: pointer; }
-
-        #dashboard {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: space-between;
-            padding: 40px;
+            justify-content: center; /* Centraliza os itens */
             gap: 40px;
-            animation: fadeIn 0.6s ease;
+            align-items: flex-start;
         }
-
-        #dashboard-info { flex: 1; min-width: 300px; }
-        #dashboard-acoes { flex: 2; }
-
-        .info-conta {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 100%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .saldo-wrapper { font-size: 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-        .saldo-item { margin: 10px 0; }
-        .saldo-label { font-size: 14px; color: #666; }
-
-        #toggle-saldo-btn { background: none; width: auto; padding: 0; margin: 0; border: none; cursor: pointer; }
-        .eye-icon { position: relative; width: 28px; height: 24px; }
-        .eye-icon svg { position: absolute; top: 0; left: 0; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
-        .eye-icon .eye-closed { opacity: 0; transform: scale(0.7); }
-        .eye-icon.is-hidden .eye-open { opacity: 0; transform: scale(0.7); }
-        .eye-icon.is-hidden .eye-closed { opacity: 1; transform: scale(1); }
-
-        .acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 100%; }
-        .acao-btn { background-color: var(--card-bg); color: var(--cor-primaria); border: 1px solid var(--cor-primaria); padding: 25px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-align: center; transition: all 0.2s; }
-        .acao-btn:hover { background: var(--gradiente-perolado); color: var(--texto-claro); transform: translateY(-5px); }
-
-        .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
-        .modal { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 420px; animation: slideDown 0.4s ease-out forwards; text-align: center; }
-        .modal h3 { margin-bottom: 20px; }
-        .modal button { width: 100%; padding: 12px; margin-top: 10px; background: var(--gradiente-perolado); color: var(--texto-claro); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: filter 0.2s, transform 0.2s; }
-        .modal button:hover { filter: brightness(1.1); }
-        .modal .modal-botoes { display: flex; gap: 10px; }
-        .modal button.close, .modal button.secondary { background: #e0e0e0; color: var(--texto); }
-        .modal button.close:hover, .modal button.secondary:hover { background: #c7c7c7; }
-        .modal input, .modal select { text-align: center; width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid var(--borda); font-size: 16px; }
-        .modal p { margin-bottom: 15px; }
-        .modal .info-pix { background: #f0f2f5; padding: 10px; border-radius: 8px; word-break: break-all; }
-
-        footer { background: var(--gradiente-perolado); color: var(--texto-claro); text-align: center; padding: 20px; }
-
-        #notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px; color: white; font-weight: bold; opacity: 0; visibility: hidden; transition: opacity 0.4s, bottom 0.4s; z-index: 2000; }
-        #notification.show { opacity: 1; visibility: visible; bottom: 80px; }
-        #notification.success { background-color: var(--sucesso); }
-        #notification.error { background-color: var(--erro); }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .info-coluna { flex-basis: 320px; flex-shrink: 0; }
+        .acoes-coluna { flex-basis: 600px; flex-shrink: 0; }
     </style>
 </head>
 <body>
 <header>
     <div class="header-left"></div>
-    <div class="logo">BiBank</div>
-    <nav>
-        <ul>
-            <li><a href="sobre.html">Sobre nós</a></li>
-            <li><a id="logout-btn">Sair</a></li>
-        </ul>
-    </nav>
+    <div class="logo"><span class="logo-flag"></span>BiBank</div>
+    <nav><ul><li><a href="sobre.html">Sobre nós</a></li><li><a id="logout-btn">Sair</a></li></ul></nav>
 </header>
-
 <main id="dashboard">
-    <div id="dashboard-info">
-        <div class="info-conta">
-            <h2 id="nome-conta"></h2>
-            <div class="saldo-wrapper">
-                <h3>Saldos</h3>
-                <button id="toggle-saldo-btn">
-                    <div class="eye-icon">
-                        <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>
-                        <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>
+    <section id="menu" class="screen">
+        <h2>Painel Principal</h2>
+        <div class="menu-layout">
+            <div class="info-coluna">
+                <div class="info-conta">
+                    <h3 id="nome-conta"></h3>
+                    <div class="saldo-wrapper">
+                        <h4>Saldos</h4>
+                        <button id="toggle-saldo-btn">
+                            <div class="eye-icon">
+                                <svg class="eye-open" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>
+                                <svg class="eye-closed" viewBox="0 0 16 16"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>
+                            </div>
+                        </button>
                     </div>
-                </button>
+                    <div class="saldo-item"><p class="saldo-label">Conta Corrente</p><strong id="saldo-corrente"></strong></div>
+                    <div class="saldo-item"><p class="saldo-label">Conta Poupança</p><strong id="saldo-poupanca"></strong></div>
+                </div>
             </div>
-            <div class="saldo-item">
-                <p class="saldo-label">Conta Corrente</p>
-                <span id="saldo-corrente"></span>
-            </div>
-            <div class="saldo-item">
-                <p class="saldo-label">Conta Poupança</p>
-                <span id="saldo-poupanca"></span>
+            <div class="acoes-coluna">
+                <div class="menu-grid">
+                    <button data-screen="transferencia">Transferir</button>
+                    <button data-screen="pix">PIX</button>
+                    <button data-screen="perfil">Perfil</button>
+                    <button data-screen="saque">Saque</button>
+                    <button data-screen="deposito">Depósito</button>
+                    <button data-screen="extrato">Extrato</button>
+                    <button data-screen="cartao">Cartão</button>
+                    <button data-screen="investimento">Investimentos</button>
+                    <button data-screen="emprestimo">Empréstimos</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="dashboard-acoes">
-        <div class="acoes">
-            <div class="acao-btn" data-action="deposito">Depósito</div>
-            <div class="acao-btn" data-action="saque">Saque</div>
-            <div class="acao-btn" data-action="transferencia">Transferência</div>
-            <div class="acao-btn" data-action="emprestimo">Empréstimos</div>
-            <div class="acao-btn" data-action="fatura">Faturas</div>
-            <div class="acao-btn" data-action="cartao">Cartões</div>
-        </div>
-    </div>
+    </section>
+    <section id="perfil" class="screen"></section>
+    <section id="extrato" class="screen"></section>
+    <section id="investimento" class="screen"></section>
+    <section id="cartao" class="screen"></section>
+    <section id="emprestimo" class="screen"></section>
 </main>
-
-<div class="modal-bg" id="modal-bg"><div class="modal" id="modal-conteudo"></div></div>
-<div id="notification"></div>
 <footer> Desenvolvido por Diedson Kenned </footer>
-
-<script>
-    const loggedInUserCPF = sessionStorage.getItem('loggedInUserCPF');
-    if (!loggedInUserCPF) {
-        window.location.href = 'login.html';
-    }
-
-    let users = JSON.parse(localStorage.getItem('biBankUsers')) || [];
-    let conta = users.find(u => u.cpf === loggedInUserCPF);
-
-    function salvarDados() {
-        const userIndex = users.findIndex(u => u.cpf === loggedInUserCPF);
-        users[userIndex] = conta;
-        localStorage.setItem('biBankUsers', JSON.stringify(users));
-    }
-
-    const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-    const showNotification = (message, type = 'success') => {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.className = type;
-        notification.classList.add('show');
-        setTimeout(() => { notification.classList.remove('show'); }, 3000);
-    };
-
-    const atualizarDashboard = () => {
-        document.getElementById('nome-conta').textContent = `Olá, ${conta.nome}`;
-        const saldoCorrenteEl = document.getElementById('saldo-corrente');
-        const saldoPoupancaEl = document.getElementById('saldo-poupanca');
-
-        saldoCorrenteEl.textContent = conta.saldoVisivel ? formatarMoeda(conta.saldos.corrente) : 'R$ ••••';
-        saldoPoupancaEl.textContent = conta.saldoVisivel ? formatarMoeda(conta.saldos.poupanca) : 'R$ ••••';
-
-        document.querySelector('.eye-icon').classList.toggle('is-hidden', !conta.saldoVisivel);
-    };
-
-    const toggleSaldo = () => {
-        conta.saldoVisivel = !conta.saldoVisivel;
-        salvarDados();
-        atualizarDashboard();
-    };
-
-    const fecharModal = () => {
-        document.getElementById('modal-bg').style.display = 'none';
-    };
-
-    // --- FUNÇÃO DE EMPRÉSTIMO CORRIGIDA ---
-    const solicitarEmprestimo = (valor) => {
-        if (conta.emprestimoAtivo) {
-            showNotification('Você já possui um empréstimo ativo.', 'error'); return;
-        }
-        if (!valor || valor <= 0) {
-            showNotification('Valor inválido.', 'error'); return;
-        }
-        // CORREÇÃO: Adiciona o saldo na conta corrente
-        conta.saldos.corrente += valor;
-        conta.emprestimoAtivo = true;
-        conta.valorEmprestimo = valor;
-        conta.faturaEmprestimo = valor * 1.03;
-        salvarDados();
-        showNotification(`Empréstimo de ${formatarMoeda(valor)} concedido!`);
-        atualizarDashboard();
-        fecharModal();
-    };
-
-    // ... (outras funções principais como pagar fatura, criar cartão, etc)
-    const pagarFaturaEmprestimo = () => {
-        const fatura = conta.faturaEmprestimo;
-        if (conta.saldos.corrente < fatura) { // Checa a conta correta
-            showNotification('Saldo insuficiente na conta corrente.', 'error'); return;
-        }
-        conta.saldos.corrente -= fatura;
-        conta.emprestimoAtivo = false;
-        conta.valorEmprestimo = 0;
-        conta.faturaEmprestimo = 0;
-        salvarDados();
-        showNotification(`Fatura de ${formatarMoeda(fatura)} paga!`);
-        atualizarDashboard();
-        fecharModal();
-    };
-
-
-    const abrirModal = (tipo) => {
-        const modalBg = document.getElementById('modal-bg');
-        const modalConteudo = document.getElementById('modal-conteudo');
-        let conteudo = '';
-        modalBg.style.display = 'flex';
-
-        switch(tipo) {
-            case 'deposito':
-                conteudo = `<h3>Depósito (Transferência Interna)</h3><p>Mova dinheiro entre suas contas.</p><select id="conta-origem"><option value="corrente">Conta Corrente (${formatarMoeda(conta.saldos.corrente)})</option><option value="poupanca">Conta Poupança (${formatarMoeda(conta.saldos.poupanca)})</option></select><select id="conta-destino"><option value="poupanca">Para Conta Poupança</option><option value="corrente">Para Conta Corrente</option></select><input type="number" id="valor-operacao" placeholder="Valor"><button id="confirmar-deposito">Confirmar</button>`;
-                break;
-            case 'saque':
-                conteudo = `<h3>Saque</h3><p>De qual conta deseja sacar?</p><select id="conta-saque"><option value="corrente">Conta Corrente (${formatarMoeda(conta.saldos.corrente)})</option><option value="poupanca">Conta Poupança (${formatarMoeda(conta.saldos.poupanca)})</option></select><input type="number" id="valor-saque" placeholder="Valor do saque"><button id="confirmar-saque">Gerar Código de Saque</button>`;
-                break;
-            case 'transferencia':
-                conteudo = `<h3>Transferência</h3><p>O que você deseja fazer?</p><div class="modal-botoes"><button id="btn-receber">Receber</button><button id="btn-transferir">Transferir</button></div>`;
-                break;
-            case 'emprestimo':
-                conteudo = `<h3>Solicitar Empréstimo</h3><input type="number" id="valor-operacao" placeholder="Valor"><button id="confirmar-emprestimo">Solicitar</button>`;
-                break;
-            case 'fatura':
-                conteudo = conta.emprestimoAtivo ? `<h3>Fatura Pendente</h3><p>Total a pagar: <strong>${formatarMoeda(conta.faturaEmprestimo)}</strong></p><button id="confirmar-pagamento-fatura">Pagar</button>` : `<h3>Faturas</h3><p>Nenhuma fatura pendente.</p>`;
-                break;
-            case 'cartao':
-                // A lógica de cartões pode ser adicionada aqui se necessário
-                conteudo = `<h3>Função em desenvolvimento</h3>`;
-                break;
-        }
-        modalConteudo.innerHTML = conteudo + `<button class="close">Fechar</button>`;
-        adicionarEventosModal(tipo);
-    };
-
-    // --- FUNÇÃO DE SUB-MODAL CORRIGIDA ---
-    const renderizarSubModal = (conteudo) => {
-        const modalConteudo = document.getElementById('modal-conteudo');
-        modalConteudo.innerHTML = conteudo + `<button class="close">Fechar</button>`;
-        // CORREÇÃO: Garante que o novo botão "Fechar" também funcione
-        modalConteudo.querySelector('.close').addEventListener('click', fecharModal);
-    }
-
-    const adicionarEventosModal = (tipo) => {
-        const modalConteudo = document.getElementById('modal-conteudo');
-        modalConteudo.querySelector('.close').addEventListener('click', fecharModal);
-
-        switch(tipo) {
-            case 'deposito':
-                document.getElementById('confirmar-deposito').addEventListener('click', () => {
-                    const origem = document.getElementById('conta-origem').value;
-                    const destino = document.getElementById('conta-destino').value;
-                    const valor = parseFloat(document.getElementById('valor-operacao').value);
-                    if(origem === destino) { showNotification('A conta de origem e destino devem ser diferentes.', 'error'); return; }
-                    if(!valor || valor <= 0) { showNotification('Valor inválido.', 'error'); return; }
-                    if(conta.saldos[origem] < valor) { showNotification('Saldo insuficiente na conta de origem.', 'error'); return; }
-                    conta.saldos[origem] -= valor;
-                    conta.saldos[destino] += valor;
-                    salvarDados();
-                    atualizarDashboard();
-                    showNotification('Transferência interna realizada com sucesso!');
-                    fecharModal();
-                });
-                break;
-            case 'saque':
-                document.getElementById('confirmar-saque').addEventListener('click', () => {
-                    const contaSaque = document.getElementById('conta-saque').value;
-                    const valor = parseFloat(document.getElementById('valor-saque').value);
-                    if(!valor || valor <= 0) { showNotification('Valor inválido.', 'error'); return; }
-                    if(conta.saldos[contaSaque] < valor) { showNotification('Saldo insuficiente.', 'error'); return; }
-                    conta.saldos[contaSaque] -= valor;
-                    salvarDados();
-                    atualizarDashboard();
-                    const codigoSaque = Math.floor(100000 + Math.random() * 900000);
-                    renderizarSubModal(`<h3>Saque Aprovado</h3><p>Dirija-se a um caixa eletrônico BiBank e utilize o código abaixo para sacar ${formatarMoeda(valor)}.</p><h2>${codigoSaque}</h2>`);
-                });
-                break;
-            case 'transferencia':
-                document.getElementById('btn-receber').addEventListener('click', () => {
-                    renderizarSubModal(`<h3>Receber Dinheiro</h3><p>Compartilhe seus dados para receber.</p><p><strong>Chave PIX (CPF):</strong></p><p class="info-pix">${conta.cpf}</p><p><strong>TED:</strong></p><p class="info-pix">Agência: 0001 / Conta: ${conta.cpf.slice(-5)}</p>`);
-                });
-                document.getElementById('btn-transferir').addEventListener('click', () => {
-                    renderizarSubModal(`<h3>Transferir - Passo 1/3</h3><p>De qual conta sairá o dinheiro?</p><select id="transfer-origem"><option value="corrente">Conta Corrente (${formatarMoeda(conta.saldos.corrente)})</option><option value="poupanca">Conta Poupança (${formatarMoeda(conta.saldos.poupanca)})</option></select><div class="modal-botoes"><button class="secondary" id="btn-voltar-transf">Voltar</button><button id="btn-avancar-transf">Avançar</button></div>`);
-                    modalConteudo.querySelector('#btn-voltar-transf').addEventListener('click', () => abrirModal('transferencia'));
-                    modalConteudo.querySelector('#btn-avancar-transf').addEventListener('click', () => {
-                        const contaOrigem = modalConteudo.querySelector('#transfer-origem').value;
-                        renderizarSubModal(`<h3>Transferir - Passo 2/3</h3><p>Qual o método?</p><div class="modal-botoes"><button data-metodo="pix">PIX</button><button data-metodo="ted">TED</button></div>`);
-                        modalConteudo.querySelectorAll('[data-metodo]').forEach(btn => {
-                            btn.addEventListener('click', e => {
-                                const metodo = e.target.dataset.metodo;
-                                const campos = metodo === 'pix' ? '<input id="chave-pix" placeholder="Chave PIX">' : '<input id="agencia-ted" placeholder="Agência"><input id="conta-ted" placeholder="Conta">';
-                                renderizarSubModal(`<h3>Transferir - Passo 3/3</h3><p>Transferindo via ${metodo.toUpperCase()} da Conta ${contaOrigem.charAt(0).toUpperCase() + contaOrigem.slice(1)}</p><input type="number" id="valor-transferencia" placeholder="Valor">${campos}<button id="finalizar-transferencia">Confirmar Transferência</button>`);
-                                modalConteudo.querySelector('#finalizar-transferencia').addEventListener('click', () => {
-                                    const valor = parseFloat(document.getElementById('valor-transferencia').value);
-                                    if(!valor || valor <= 0) { showNotification('Valor inválido.', 'error'); return; }
-                                    if(conta.saldos[contaOrigem] < valor) { showNotification('Saldo insuficiente.', 'error'); return; }
-                                    conta.saldos[contaOrigem] -= valor;
-                                    salvarDados();
-                                    atualizarDashboard();
-                                    showNotification('Transferência realizada com sucesso!');
-                                    fecharModal();
-                                });
-                            });
-                        });
-                    });
-                });
-                break;
-            case 'emprestimo':
-                document.getElementById('confirmar-emprestimo').addEventListener('click', () => solicitarEmprestimo(parseFloat(document.getElementById('valor-operacao').value)));
-                break;
-            case 'fatura':
-                if (conta.emprestimoAtivo) { document.getElementById('confirmar-pagamento-fatura').addEventListener('click', pagarFaturaEmprestimo); }
-                break;
-        }
-    };
-
-    document.getElementById('toggle-saldo-btn').addEventListener('click', toggleSaldo);
-    document.querySelector('.acoes').addEventListener('click', (e) => { if (e.target.classList.contains('acao-btn')) abrirModal(e.target.dataset.action); });
-    document.getElementById('logout-btn').addEventListener('click', () => { sessionStorage.removeItem('loggedInUserCPF'); window.location.href = 'login.html'; });
-
-    if (!conta.saldos) {
-        conta.saldos = { corrente: conta.saldo || 1000, poupanca: 500 };
-        conta.saldoVisivel = true;
-        salvarDados();
-    }
-    atualizarDashboard();
-</script>
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup"><div id="popupIcon" style="font-size: 24px;"></div><h3 id="popupTitulo"></h3><p id="popupMensagem"></p><button id="popup-close-btn" style="width:auto; padding: 8px 25px;">Ok</button></div>
+<div class="popup" id="passwordConfirmPopup"><h3>Confirmação de Senha</h3><p>Para sua segurança, digite sua senha.</p><input type="password" id="confirmPassInput" placeholder="Sua Senha"><button class="primary" id="confirmar-transacao-btn">Confirmar</button></div>
+<script src="dashboard.js"></script>
 </body>
 </html>

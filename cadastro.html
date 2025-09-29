@@ -2,28 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BiBank - Complete seu Cadastro</title>
+    <title>BiBank - Cadastro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
     <div class="header-left"></div>
-    <div class="logo">BiBank</div>
-    <nav>
-        <ul>
-            <li><a href="sobre.html">Sobre nós</a></li>
-        </ul>
-    </nav>
+    <div class="logo"><span class="logo-flag"></span>BiBank</div>
+    <nav><ul><li><a href="sobre.html">Sobre nós</a></li></ul></nav>
 </header>
 
 <main class="container" style="justify-content: center;">
     <div class="card">
-        <h2>Falta pouco!</h2>
+        <h2>Finalize seu Cadastro</h2>
         <p>CPF: <strong id="cpf-display"></strong></p>
         <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="password" id="senha" placeholder="Crie uma senha">
-        <input type="password" id="confirmar-senha" placeholder="Confirme sua senha">
-        <button id="finalizar-cadastro-btn">Finalizar Cadastro</button>
+        <input type="password" id="senha" placeholder="Crie uma senha (mín. 6 caracteres)">
+        <button id="finalizar-cadastro-btn" class="primary">Finalizar Cadastro</button>
     </div>
 </main>
 
@@ -31,63 +26,31 @@
 <footer> Desenvolvido por Diedson Kenned </footer>
 
 <script>
-    const cpfDisplay = document.getElementById('cpf-display');
-    const nomeInput = document.getElementById('nome');
-    const senhaInput = document.getElementById('senha');
-    const confirmarSenhaInput = document.getElementById('confirmar-senha');
-    const btn = document.getElementById('finalizar-cadastro-btn');
-    const notification = document.getElementById('notification');
-
     const cpf = localStorage.getItem('cpfParaCadastro');
+    if (!cpf) { window.location.href = 'index.html'; }
+    document.getElementById('cpf-display').textContent = cpf;
 
-    // Proteção: se não houver CPF, volta para o início
-    if (!cpf) {
-        window.location.href = 'index.html';
-    } else {
-        cpfDisplay.textContent = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-    }
-
-    const showNotification = (message, type = 'error') => {
-        notification.textContent = message;
-        notification.className = type;
-        notification.classList.add('show');
-        setTimeout(() => { notification.classList.remove('show'); }, 3000);
-    };
-
-    btn.addEventListener('click', () => {
-        const nome = nomeInput.value.trim();
-        const senha = senhaInput.value;
-        const confirmarSenha = confirmarSenhaInput.value;
-
-        if (!nome || !senha || !confirmarSenha) {
-            showNotification('Todos os campos são obrigatórios.');
-            return;
-        }
-        if (senha !== confirmarSenha) {
-            showNotification('As senhas não coincidem.');
-            return;
-        }
+    document.getElementById('finalizar-cadastro-btn').addEventListener('click', () => {
+        const nome = document.getElementById('nome').value.trim();
+        const senha = document.getElementById('senha').value;
+        if (!nome || !senha || senha.length < 6) { alert('Preencha todos os campos. A senha deve ter no mínimo 6 caracteres.'); return; }
 
         const users = JSON.parse(localStorage.getItem('biBankUsers')) || [];
-
         const novoUsuario = {
-            cpf: cpf,
-            nome: nome,
-            senha: senha, // Em um app real, a senha seria criptografada!
-            saldo: 1000.00,
-            emprestimoAtivo: false,
-            valorEmprestimo: 0,
-            faturaEmprestimo: 0,
-            cartoes: [
-                { numero: `**** **** **** ${Math.floor(1000 + Math.random() * 9000)}`, tipo: 'Físico', ativo: true }
-            ]
+            cpf: cpf, nome: nome, senha: senha,
+            saldos: { corrente: 1000.00, poupanca: 500.00 },
+            saldoVisivel: true,
+            extrato: [],
+            emprestimoAtivo: false, faturaEmprestimo: 0, valorEmprestimo: 0,
+            saldoInvestimento: 0,
+            cartaoLimiteTotal: 2000.00, cartaoFaturaAtual: 0,
+            pixAgendados: []
         };
 
         users.push(novoUsuario);
         localStorage.setItem('biBankUsers', JSON.stringify(users));
-        localStorage.removeItem('cpfParaCadastro'); // Limpa o CPF temporário
-
-        alert('Cadastro realizado com sucesso! Você será redirecionado para a tela de login.');
+        localStorage.removeItem('cpfParaCadastro');
+        alert('Cadastro realizado! Redirecionando para login.');
         window.location.href = 'login.html';
     });
 </script>
