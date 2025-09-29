@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>BiBank - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="header-left"></div>
+  <div class="logo"><span class="logo-flag"></span>BiBank</div>
+  <nav><ul><li><a href="sobre.html">Sobre nós</a></li></ul></nav>
+</header>
+
+<main class="container" style="justify-content: center;">
+  <div class="card">
+    <h2>Acesse sua conta</h2>
+    <input type="text" id="cpf" placeholder="CPF" maxlength="11">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="login-btn" class="primary">Entrar</button>
+    <p class="link-login" style="margin-top:15px;">Não tem conta? <a href="index.html">Cadastre-se</a></p>
+  </div>
+</main>
+
+<div id="notification"></div>
+<footer> Desenvolvido por Diedson Kenned </footer>
+
+<script>
+  document.getElementById('login-btn').addEventListener('click', () => {
+    const cpf = document.getElementById('cpf').value.trim();
+    const senha = document.getElementById('senha').value;
+    if (!cpf || !senha) { alert('Preencha CPF e senha.'); return; }
+    const users = JSON.parse(localStorage.getItem('biBankUsers')) || [];
+    const user = users.find(u => u.cpf === cpf);
+    if (user && user.senha === senha) {
+      sessionStorage.setItem('loggedInUserCPF', cpf);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('CPF ou senha inválidos.');
+    }
+  });
+</script>
+</body>
+</html>

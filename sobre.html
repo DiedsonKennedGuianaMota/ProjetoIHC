@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>BiBank - Sobre Mim</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .about-container { display: flex; align-items: center; justify-content: center; gap: 50px; padding: 50px; max-width: 900px; margin: auto; background: var(--card-bg); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: left; }
+        .about-image img { width: 250px; height: 250px; object-fit: cover; border-radius: 50%; border: 6px solid var(--cor-primaria); padding: 5px; background-color: white; }
+        .about-info h2 { font-family: 'Russo One', sans-serif; color: var(--cor-primaria); font-size: 36px; margin-bottom: 15px; }
+        .about-info p { line-height: 1.6; margin-bottom: 25px; }
+        .social-links { display: flex; gap: 20px; }
+        .social-links a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--texto-claro); background: var(--gradiente-perolado); padding: 10px 20px; border-radius: 8px; font-weight: bold; }
+        .social-links svg { width: 20px; height: 20px; fill: white; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left"></div>
+    <div class="logo"><span class="logo-flag"></span>BiBank</div>
+    <nav><ul><li><a href="#" id="voltar-btn-header">← Voltar</a></li></ul></nav>
+</header>
+<main class="container">
+    <div class="about-container">
+        <div class="about-image"><img src="minha-foto.jpg" alt="Foto de Diedson Kenned"></div>
+        <div class="about-info">
+            <h2>Diedson Kenned</h2>
+            <p>Sou um estudante de 23 anos do curso de Licenciatura em Computação na <strong>Universidade do Estado do Amazonas (UEA)</strong>, pela Escola Superior de Tecnologia (EST).<br><br>Este projeto foi desenvolvido como parte da disciplina de <strong>Interação Homem-Computador</strong>.</p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/dikokenned/" target="_blank">Instagram</a>
+                <a href="https://x.com/dikokenned" target="_blank">X (Twitter)</a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer> Desenvolvido por Diedson Kenned </footer>
+<script>
+    document.getElementById('voltar-btn-header').addEventListener('click', (e) => {
+        e.preventDefault();
+        history.back();
+    });
+</script>
+</body>
+</html>
